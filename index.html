@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWINDS - Hacker & Developer</title>
+    <style>
+        /* =============================================
+           ESTILO HACKER OSCURO - TWINDS
+           ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           ANIMACIÓN DE CARGA (entrada)
+           ============================================= */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 1.5s ease;
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+        }
+
+        #preloader .loader-text {
+            font-size: 2em;
+            letter-spacing: 10px;
+            animation: blink 0.8s infinite;
+            text-shadow: 0 0 30px #00ff41;
+        }
+
+        #preloader .loader-bar {
+            width: 300px;
+            height: 4px;
+            background: #111;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+            border: 1px solid #00ff4155;
+        }
+
+        #preloader .loader-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: #00ff41;
+            box-shadow: 0 0 20px #00ff41;
+            animation: loadBar 2.5s ease forwards;
+        }
+
+        @keyframes loadBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Efecto de escaneo CRT */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                rgba(0,255,65,0.03) 0px,
+                rgba(0,255,65,0.03) 2px,
+                transparent 2px,
+                transparent 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #0d0d0d;
+            border: 2px solid #00ff41;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 0 60px #00ff4122, inset 0 0 60px #00ff4105;
+            position: relative;
+            animation: glowPulse 4s infinite alternate;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 2.8s forwards;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 40px #00ff4122, inset 0 0 40px #00ff4105; }
+            100% { box-shadow: 0 0 80px #00ff4144, inset 0 0 80px #00ff410a; }
+        }
+
+        /* Título principal */
+        .title {
+            text-align: center;
+            font-size: 3.5em;
+            font-weight: bold;
+            text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff4133;
+            letter-spacing: 8px;
+            border-bottom: 2px solid #00ff4155;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            animation: glitchText 4s infinite;
+        }
+
+        @keyframes glitchText {
+            0% { text-shadow: 0 0 20px #00ff41; }
+            50% { text-shadow: 0 0 40px #ff0040, 0 0 80px #00ff41; }
+            100% { text-shadow: 0 0 20px #00ff41; }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00ff4188;
+            letter-spacing: 4px;
+            font-size: 0.9em;
+            margin-top: -15px;
+            margin-bottom: 30px;
+        }
+
+        /* Línea de estado */
+        .status-bar {
+            background: #050505;
+            border: 1px solid #00ff4144;
+            border-radius: 4px;
+            padding: 10px 15px;
+            font-size: 0.8em;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .status-bar .blink {
+            animation: blink 1.2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* Tarjetas de información */
+        .card {
+            background: #050505;
+            border: 1px solid #00ff4155;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 30px #00ff4122;
+        }
+
+        .card-title {
+            color: #00ff41;
+            font-weight: bold;
+            font-size: 1.1em;
+            border-bottom: 1px dashed #00ff4144;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .card-title .badge {
+            font-size: 0.6em;
+            background: #ff004022;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #ff0040;
+            border: 1px solid #ff004044;
+        }
+
+        .card-content {
+            color: #00ff41cc;
+            font-size: 0.85em;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .card-content .highlight {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .card-content .danger {
+            color: #ff0040;
+            text-shadow: 0 0 10px #ff0040;
+        }
+
+        /* ASCII Art */
+        .ascii {
+            text-align: center;
+            font-size: 0.6em;
+            color: #00ff4155;
+            margin: 20px 0;
+            line-height: 1.2;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Grid de habilidades */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-item {
+            background: #0a0a0a;
+            border: 1px solid #00ff4144;
+            border-radius: 4px;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 0.75em;
+            transition: all 0.3s;
+        }
+
+        .skill-item:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px #00ff4122;
+            background: #00ff410a;
+        }
+
+        /* =============================================
+           CONTADOR, LIKES Y COMENTARIOS
+           ============================================= */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-box {
+            background: #0a0a0a;
+            border: 1px solid #00ff4144;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ff41;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .stat-box .label {
+            font-size: 0.7em;
+            color: #00ff4188;
+            margin-top: 5px;
+        }
+
+        .like-btn {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 10px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        .like-btn:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 30px #00ff4144;
+        }
+
+        .like-btn.liked {
+            border-color: #ff0040;
+            color: #ff0040;
+        }
+
+        .like-btn.liked:hover {
+            background: #ff0040;
+            color: #0a0a0a;
+            box-shadow: 0 0 30px #ff004044;
+        }
+
+        /* Comentarios */
+        .comment-input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #00ff4155;
+            color: #00ff41;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            border-radius: 4px;
+            outline: none;
+            resize: vertical;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .comment-input:focus {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px #00ff4122;
+        }
+
+        .comment-btn {
+            background: transparent;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .comment-btn:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 30px #00ff4144;
+        }
+
+        .comment-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #00ff4133;
+            padding-top: 10px;
+        }
+
+        .comment-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #00ff4111;
+            font-size: 0.75em;
+            color: #00ff41aa;
+        }
+
+        .comment-item .user {
+            color: #00ff41;
+            font-weight: bold;
+        }
+
+        .comment-item .time {
+            color: #00ff4166;
+            font-size: 0.7em;
+            float: right;
+        }
+
+        /* Botón de contacto */
+        .contact-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .contact-btn:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 40px #00ff4144;
+        }
+
+        .contact-btn-danger {
+            border-color: #ff0040;
+            color: #ff0040;
+        }
+
+        .contact-btn-danger:hover {
+            background: #ff0040;
+            color: #0a0a0a;
+            box-shadow: 0 0 40px #ff004044;
+        }
+
+        /* Redes sociales */
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .social-link {
+            background: #0a0a0a;
+            border: 1px solid #00ff4155;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #00ff41;
+            text-decoration: none;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px #00ff4122;
+            background: #00ff410a;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #00ff4166;
+            font-size: 0.65em;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #00ff4133;
+            letter-spacing: 2px;
+        }
+
+        /* =============================================
+           MÚSICA - CONTROL OCULTO
+           ============================================= */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0d0d0d;
+            border: 1px solid #00ff4155;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #00ff41;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+            font-size: 1.5em;
+        }
+
+        .music-control:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 30px #00ff4122;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .title { font-size: 2em; letter-spacing: 4px; }
+            .subtitle { font-size: 0.7em; }
+            .status-bar { flex-direction: column; gap: 5px; }
+            .skills-grid { grid-template-columns: 1fr 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .ascii { font-size: 0.4em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================= -->
+    <!-- PRELOADER (ANIMACIÓN DE ENTRADA) -->
+    <!-- ============================================= -->
+    <div id="preloader">
+        <div class="loader-text">▐ TWINDS</div>
+        <div class="loader-bar">
+            <div class="fill"></div>
+        </div>
+        <div style="margin-top:15px;color:#00ff4188;font-size:0.8em;letter-spacing:4px;">
+            <span class="blink">▸ CARGANDO SISTEMA... ▸</span>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- CONTROL DE MÚSICA -->
+    <!-- ============================================= -->
+    <div class="music-control" id="musicControl" title="▶ Reproducir música">
+        ▶
+    </div>
+    <audio id="bgMusic" loop>
+        <!-- =============================================
+             MÚSICA AMBIENTE - DOMA (puedes cambiar la URL)
+             ============================================= -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <!-- Si no carga, usa este enlace alternativo (más ligero) -->
+        <!-- <source src="https://cdn.pixabay.com/download/audio/2022/02/08/audio_b6e25d5739.mp3" type="audio/mpeg"> -->
+    </audio>
+
+    <!-- ============================================= -->
+    <!-- CONTENEDOR PRINCIPAL -->
+    <!-- ============================================= -->
+    <div class="container">
+
+        <!-- ========================================= -->
+        <!-- TÍTULO -->
+        <!-- ========================================= -->
+        <div class="title">▐ TWINDS</div>
+        <div class="subtitle">• HACKER • PROGRAMADOR • TRACKER •</div>
+
+        <!-- ========================================= -->
+        <!-- STATUS BAR -->
+        <!-- ========================================= -->
+        <div class="status-bar">
+            <span>🔥 <span class="blink">SYSTEM: ACTIVE</span></span>
+            <span>🌐 IP: <span id="ipDisplay">192.168.13.37</span></span>
+            <span>🛡️ ROOT: <span class="blink">ACCESS GRANTED</span></span>
+            <span>⚡ <span class="blink">██████████ 100%</span></span>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- ASCII ART -->
+        <!-- ========================================= -->
+        <div class="ascii">
+        ╔═══════════════════════════════════════════════════════╗
+        ║   ██╗    ██╗████████╗██╗███╗   ██╗██████╗ ███████╗  ║
+        ║   ██║    ██║╚══██╔══╝██║████╗  ██║██╔══██╗██╔════╝  ║
+        ║   ██║ █╗ ██║   ██║   ██║██╔██╗ ██║██║  ██║███████╗  ║
+        ║   ██║███╗██║   ██║   ██║██║╚██╗██║██║  ██║╚════██║  ║
+        ║   ╚███╔███╔╝   ██║   ██║██║ ╚████║██████╔╝███████║  ║
+        ║    ╚══╝╚══╝    ╚═╝   ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝  ║
+        ║                                                     ║
+        ║  "NO SOY UN HÉROE. TAMPOCO UN VILLANO.             ║
+        ║   SOLO UN PROGRAMADOR QUE SABE DEMASIADO."          ║
+        ╚═══════════════════════════════════════════════════════╝
+        </div>
+
+        <!-- ========================================= -->
+        <!-- QUIÉN SOY -->
+        <!-- ========================================= -->
+        <div class="card">
+            <div class="card-title">
+                <span>👤 QUIÉN SOY</span>
+                <span class="badge">ANONYMOUS</span>
+            </div>
+            <div class="card-content">
+                <span class="highlight">[+]</span> Nombre: <span class="danger">TWINDS</span><br>
+                <span class="highlight">[+]</span> Soy: <span class="danger">Un asco de persona</span><br>
+                <span class="highlight">[+]</span> Profesión: <span class="danger">Programador</span><br>
+                <span class="highlight">[+]</span> Frase de cabecera: <span class="danger">"Si funciona, no lo toques. Si no funciona, no es mi problema."</span>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- TWINDREL -->
+        <!-- ========================================= -->
+        <div class="card">
+            <div class="card-title">
+                <span>💀 JERGA HACKER</span>
+                <span class="badge">1337</span>
+            </div>
+            <div class="card-content">
+                <span class="highlight">[+]</span> <span class="danger">0day</span> — Vulnerabilidad sin parche.<br>
+                <span class="highlight">[+]</span> <span class="danger">Script Kiddie</span> — El que usa herramientas sin entenderlas.<br>
+                <span class="highlight">[+]</span> <span class="danger">Phreaking</span> — Hackeo de sistemas telefónicos.<br>
+                <span class="highlight">[+]</span> <span class="danger">Wardriving</span> — Buscar redes WiFi vulnerables.<br>
+                <span class="highlight">[+]</span> <span class="danger">Rootkit</span> — Ocultarse en el núcleo del sistema.<br>
+                <span class="highlight">[+]</span> <span class="danger">Doxing</span> — Exponer información personal.<br>
+                <span class="highlight">[+]</span> <span class="danger">Shellcode</span> — Código para explotar vulnerabilidades.<br>
+                <span class="highlight">[+]</span> <span class="danger">C2</span> — Command & Control (servidor de ataque).<br>
+                <span class="highlight">[+]</span> <span class="danger">Botnet</span> — Ejército de dispositivos infectados.<br>
+                <span class="highlight">[+]</span> <span class="danger">RAT</span> — Remote Access Trojan.<br>
+                <span class="highlight">[+]</span> <span class="danger">Keylogger</span> — Registrador de teclas.<br>
+                <span class="highlight">[+]</span> <span class="danger">Exploit</span> — Código que aprovecha un fallo.
+                <span class="highlight">[+]</span> <span class="danger">Dino</span> — dinosaurio2016 soy tu fan 
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- REDES SOCIALES -->
+        <!-- ========================================= -->
+        <div class="card">
+            <div class="card-title">
+                <span>📡 REDES SOCIALES</span>
+                <span class="badge">CONTACTO</span>
+            </div>
+        
+            <div class="card-content" style="text-align:center;">
+                <div class="social-links">
+                    <a href="mailto:TWINDSXD@proton.me" class="social-link">📧 TWINDSXD@proton.me</a>
+                    <a href="https://tiktok.com/@twinds.org" target="_blank" class="social-link">🎵 @twinds.org</a>
+                </div>
+                <div style="margin-top:10px;color:#00ff4188;font-size:0.8em;">
+                    <span class="highlight">[!]</span> No soy una caja de sorpresas. Habla claro o no hables.
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CONTADOR, LIKES Y COMENTARIOS -->
+        <!-- ========================================= -->
+        <div class="card">
+            <div class="card-title">
+                <span>📊 ESTADÍSTICAS</span>
+                <span class="badge">REALTIME</span>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="number" id="visitorCount">0</div>
+                    <div class="label">👁️ VISITAS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="likeCount">0</div>
+                    <div class="label">❤️ LIKES</div>
+                </div>
+            </div>
+
+            <!-- Botón de Like -->
+            <div style="text-align:center;">
+                <button class="like-btn" id="likeBtn">❤️ DAR LIKE</button>
+            </div>
+
+            <!-- Sistema de comentarios -->
+            <div style="margin-top:20px;">
+                <div style="color:#00ff4188;font-size:0.8em;margin-bottom:5px;">
+                    <span class="highlight">[+]</span> Deja tu comentario (llegará a mi correo):
+                </div>
+                <input type="text" id="commentUser" placeholder="Tu alias..." style="width:100%;background:#111;border:1px solid #00ff4155;color:#00ff41;padding:8px;font-family:'Courier New',monospace;border-radius:4px;margin-bottom:8px;">
+                <textarea class="comment-input" id="commentText" placeholder="Escribe tu mensaje..."></textarea>
+                <button class="comment-btn" onclick="sendComment()">📤 ENVIAR COMENTARIO</button>
+                <div class="comment-list" id="commentList">
+                    <div style="color:#00ff4166;text-align:center;font-size:0.7em;">No hay comentarios aún. Sé el primero.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- MENSAJE FINAL -->
+        <!-- ========================================= -->
+        <div class="card" style="border-color:#ff004044;">
+            <div class="card-title">
+                <span>💀 AVISO</span>
+                <span class="badge">WARNING</span>
+            </div>
+            <div class="card-content" style="color:#ff0040;text-align:center;">
+                <span class="danger">[!]</span> Si estás aquí es porque alguien te pasó el enlace.<br>
+                <span class="danger">[!]</span> No preguntes por exploits. No comparto.<br>
+                <span class="danger">[!]</span> No soy tu amigo. No soy tu enemigo.<br>
+                <span class="danger">[!]</span> Soy solo un programador que sabe demasiado.<br><br>
+                <span style="color:#00ff41;">"El código es mi lenguaje. El caos es mi orden."</span>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- BOTONES DE ACCIÓN -->
+        <!-- ========================================= -->
+        <a href="#" class="contact-btn" onclick="alert('🔥 Acceso denegado.')">▶ DESCIFRAR</a>
+        <a href="#" class="contact-btn contact-btn-danger" onclick="alert('💀 Has activado la autodestrucción. Adiós.')">☠️ AUTODESTRUIR</a>
+
+        <!-- ========================================= -->
+        <!-- FOOTER -->
+        <!-- ========================================= -->
+        <div class="footer">
+            TWINDS · <span id="timestamp"></span> · "No confies en nadie este mundo esta podrido."
+        </div>
+
+    </div>
+
+    <!-- ============================================= -->
+    <!-- JAVASCRIPT - TODA LA LÓGICA -->
+    <!-- ============================================= -->
+    <script>
+        // =============================================
+        // 1. PRELOADER (ocultar al cargar)
+        // =============================================
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 3000);
+        });
+
+        // =============================================
+        // 2. TIMESTAMP EN VIVO
+        // =============================================
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleString('es-ES', {
+                timeZone: 'America/Caracas'
+            });
+        }
+        setInterval(updateTimestamp, 1000);
+        updateTimestamp();
+
+        // =============================================
+        // 3. IP DINÁMICA (realismo hacker)
+        // =============================================
+        function randomIP() {
+            const ip = [
+                '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255),
+                '10.0.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255),
+                '172.16.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255),
+                '193.6.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255)
+            ];
+            document.getElementById('ipDisplay').textContent = ip[Math.floor(Math.random() * ip.length)];
+        }
+        setInterval(randomIP, 5000);
+        randomIP();
+
+        // =============================================
+        // 4. CONTADOR DE VISITAS (localStorage)
+        // =============================================
+        let visits = localStorage.getItem('twin_visits');
+        if (visits === null) {
+            visits = 0;
+        } else {
+            visits = parseInt(visits) + 1;
+        }
+        localStorage.setItem('twin_visits', visits);
+        document.getElementById('visitorCount').textContent = visits;
+
+        // =============================================
+        // 5. SISTEMA DE LIKES (localStorage)
+        // =============================================
+        let likes = localStorage.getItem('twin_likes');
+        if (likes === null) {
+            likes = 0;
+        } else {
+            likes = parseInt(likes);
+        }
+        document.getElementById('likeCount').textContent = likes;
+
+        let userLiked = localStorage.getItem('twin_liked') === 'true';
+        const likeBtn = document.getElementById('likeBtn');
+
+        if (userLiked) {
+            likeBtn.textContent = '❤️ LIKE (YA)';
+            likeBtn.classList.add('liked');
+        }
+
+        likeBtn.addEventListener('click', function() {
+            if (userLiked) {
+                alert('⚠️ Ya has dado like antes. Un like por persona.');
+                return;
+            }
+            likes = likes + 1;
+            localStorage.setItem('twin_likes', likes);
+            localStorage.setItem('twin_liked', 'true');
+            document.getElementById('likeCount').textContent = likes;
+            this.textContent = '❤️ LIKE (YA)';
+            this.classList.add('liked');
+            userLiked = true;
+            // Efecto de notificación
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => { this.style.transform = 'scale(1)'; }, 200);
+        });
+
+        // =============================================
+        // 6. SISTEMA DE COMENTARIOS (envío a correo)
+        // =============================================
+        function sendComment() {
+            const user = document.getElementById('commentUser').value.trim();
+            const comment = document.getElementById('commentText').value.trim();
+
+            if (!user) {
+                alert('❌ Escribe un alias.');
+                return;
+            }
+            if (!comment) {
+                alert('❌ Escribe un comentario.');
+                return;
+            }
+
+            // Enviar correo usando mailto (el usuario debe tener cliente de correo configurado)
+            const subject = encodeURIComponent('Comentario desde TWINDS - ' + user);
+            const body = encodeURIComponent(
+                '👤 Usuario: ' + user + '\n\n' +
+                '💬 Comentario:\n' + comment + '\n\n' +
+                '📅 Fecha: ' + new Date().toLocaleString('es-ES') + '\n' +
+                '🌐 IP: ' + document.getElementById('ipDisplay').textContent
+            );
+
+            // Abrir cliente de correo
+            window.location.href = 'mailto:TWINDSXD@proton.me?subject=' + subject + '&body=' + body;
+
+            // Feedback visual
+            const btn = document.querySelector('.comment-btn');
+            btn.textContent = '📤 ENVIADO ✓';
+            btn.style.borderColor = '#00ff41';
+            btn.style.color = '#00ff41';
+            setTimeout(() => {
+                btn.textContent = '📤 ENVIAR COMENTARIO';
+                btn.style.borderColor = '#00ff41';
+                btn.style.color = '#00ff41';
+            }, 3000);
+
+            // Agregar comentario a la lista (local)
+            const list = document.getElementById('commentList');
+            if (list.querySelector('div[style]')) {
+                list.innerHTML = '';
+            }
+            const item = document.createElement('div');
+            item.className = 'comment-item';
+            item.innerHTML = `<span class="user">${user}</span> ${comment} <span class="time">Justo ahora</span>`;
+            list.prepend(item);
+
+            document.getElementById('commentText').value = '';
+            document.getElementById('commentUser').value = '';
+        }
+
+        // =============================================
+        // 7. MÚSICA DE FONDO (Doma)
+        // =============================================
+        const musicControl = document.getElementById('musicControl');
+        const bgMusic = document.getElementById('bgMusic');
+        let musicPlaying = false;
+
+        musicControl.addEventListener('click', function() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                this.textContent = '▶';
+                this.title = '▶ Reproducir música';
+            } else {
+                bgMusic.play().catch(e => {
+                    // Si no carga, mostrar mensaje
+                    console.log('⚠️ La música no pudo cargarse. Tu navegador puede bloquearla.');
+                });
+                this.textContent = '⏸';
+                this.title = '⏸ Pausar música';
+            }
+            musicPlaying = !musicPlaying;
+        });
+
+        // =============================================
+        // 8. DETENER CLIC DERECHO (efecto "hacker")
+        // =============================================
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('🚫 Acceso restringido. Solo para ojos autorizados.');
+        });
+
+        // =============================================
+        // 9. CAMBIAR FAVICON
+        // =============================================
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔥</text></svg>';
+        document.head.appendChild(favicon);
+
+        // =============================================
+        // 10. CONSOLA HACKER (efecto visual)
+        // =============================================
+        console.log('%c🔥 TWINDS - PRESENTACIÓN %cCargado correctamente.',
+            'color: #00ff41; font-size: 20px; font-weight: bold;',
+            'color: #00ff4188; font-size: 14px;'
+        );
+        console.log('%c⚠️ Este perfil está bajo vigilancia. No intentes rastrearlo.',
+            'color: #ff0040; font-size: 14px;'
+        );
+        console.log('%c📧 Correo: TWINDSXD@proton.me',
+            'color: #00ff41; font-size: 12px;'
+        );
+    </script>
+
+</body>
+</html>
